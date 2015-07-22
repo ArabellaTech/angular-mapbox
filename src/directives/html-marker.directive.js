@@ -123,7 +123,7 @@
                 marker.dragging.enable();
             }
 
-            mapboxService.addMarker(marker);
+            mapboxService.addMarker(marker, map);
 
             return marker;
         }

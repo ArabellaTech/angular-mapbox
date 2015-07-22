@@ -15,10 +15,22 @@
         _markers = [],
         _mapOptions = [];
 
-    var fitMapToMarkers = debounce(function() {
+    var fitMapToMarkers = debounce(function(map) {
+//      console.log('map', map);
+//      console.log('map instances', _mapInstances);
+//      console.log('map index', _mapInstances.indexOf(map));
+//      
+//      var mapIndex = 0;
+//      angular.forEach(_mapInstances, function(mapInstance, i) {
+//        console.log('mapInstance === map', mapInstance === map);
+//        if (mapInstance === map) {
+//          mapIndex = i;
+//        }
+//      });
+//      
+//      console.log('mapIndex', mapIndex);
       // TODO: refactor
-      var map = _mapInstances[0];
-      var group = new L.featureGroup(getMarkers());
+      var group = new L.featureGroup(getMarkers(map));
       map.fitBounds(group.getBounds());
     }, 0);
 
@@ -51,10 +63,14 @@
       return _mapInstances;
     }
 
-    function addMarker(marker) {
+    function getMapInstanceIndex(map) {
+      return _mapInstances.indexOf(map);
+    }
+
+    function addMarker(marker, map) {
+      var instanceIndex = getMapInstanceIndex(map);
       // TODO: tie markers to specific map instance
-      var map = getMapInstances()[0];
-      _markers[0].push(marker);
+      _markers[instanceIndex].push(marker);
 
       var opts = getOptionsForMap(map);
       if(opts.scaleToFit) {
@@ -66,7 +82,7 @@
       map.removeLayer(marker);
 
       var markerIndexToRemove;
-      for(var i = 0, markers = getMarkers(); markers[i]; i++) {
+      for(var i = 0, markers = getMarkers(map); markers[i]; i++) {
         if(markers[i]._leaflet_id === marker._leaflet_id) {
           markerIndexToRemove = i;
         }
@@ -103,13 +119,15 @@
       };
     }
 
-    function getMarkers() {
-      return _markers[0];
+    function getMarkers(map) {
+      var instanceIndex = getMapInstanceIndex(map);
+      return _markers[instanceIndex];
     }
 
     function getOptionsForMap(map) { // jshint ignore:line
-      // TODO: get options for specific map instance
-      return _mapOptions[0];
+      var instanceIndex = getMapInstanceIndex(map);
+      console.log('instanceIndex', instanceIndex)
+      return _mapOptions[instanceIndex];
     }
   }
 })();
@@ -266,7 +284,7 @@
                 marker.dragging.enable();
             }
 
-            mapboxService.addMarker(marker);
+            mapboxService.addMarker(marker, map);
 
             return marker;
         }
@@ -405,7 +423,7 @@
       controller.getMap().then(function(map) {
         transclude(scope, function(transcludedContent) {
           var popupContentElement;
-          if(transcludedContent) {
+          if(transcludedContent != null && transcludedContent.length > 0) {
             popupContentElement = document.createElement('span');
             for(var i = 0; i < transcludedContent.length; i++) {
               popupContentElement.appendChild(transcludedContent[i]);
@@ -474,7 +492,7 @@
         marker.dragging.enable();
       }
 
-      mapboxService.addMarker(marker);
+      mapboxService.addMarker(marker, map);
 
       return marker;
     }
