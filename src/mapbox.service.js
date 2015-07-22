@@ -9,20 +9,6 @@
         _mapOptions = [];
 
     var fitMapToMarkers = debounce(function(map) {
-//      console.log('map', map);
-//      console.log('map instances', _mapInstances);
-//      console.log('map index', _mapInstances.indexOf(map));
-//      
-//      var mapIndex = 0;
-//      angular.forEach(_mapInstances, function(mapInstance, i) {
-//        console.log('mapInstance === map', mapInstance === map);
-//        if (mapInstance === map) {
-//          mapIndex = i;
-//        }
-//      });
-//      
-//      console.log('mapIndex', mapIndex);
-      // TODO: refactor
       var group = new L.featureGroup(getMarkers(map));
       map.fitBounds(group.getBounds());
     }, 0);
@@ -62,7 +48,6 @@
 
     function addMarker(marker, map) {
       var instanceIndex = getMapInstanceIndex(map);
-      // TODO: tie markers to specific map instance
       _markers[instanceIndex].push(marker);
 
       var opts = getOptionsForMap(map);
@@ -119,7 +104,6 @@
 
     function getOptionsForMap(map) { // jshint ignore:line
       var instanceIndex = getMapInstanceIndex(map);
-      console.log('instanceIndex', instanceIndex)
       return _mapOptions[instanceIndex];
     }
   }

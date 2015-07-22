@@ -32,10 +32,10 @@
           scope.map.scrollWheelZoom.disable();
         }
 
-        var mapWidth = attrs.width || 500;
-        var mapHeight = attrs.height || 500;
-        element.css('width', mapWidth + 'px');
-        element.css('height', mapHeight + 'px');
+        var mapWidth = attrs.width + 'px' || 'auto';
+        var mapHeight = attrs.height + 'px' ||  'auto';
+        element.css('width', mapWidth);
+        element.css('height', mapHeight);
 
         scope.zoom = attrs.zoom || 12;
         if(attrs.lat && attrs.lng) {
