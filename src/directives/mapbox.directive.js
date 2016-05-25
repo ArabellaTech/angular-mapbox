@@ -10,7 +10,8 @@
       scope: true,
       replace: true,
       link: function(scope, element, attrs) {
-        scope.map = L.mapbox.map(element[0], attrs.mapId);
+        var zoomControl = attrs.zoomControl === "false" ? false : true;
+        scope.map = L.mapbox.map(element[0], attrs.mapId, { zoomControl: zoomControl });
         _mapboxMap.resolve(scope.map);
         var mapOptions = {
           clusterMarkers: attrs.clusterMarkers !== undefined,
@@ -18,7 +19,7 @@
           scaleToFitAll: attrs.scaleToFit === 'all'
         };
         mapboxService.addMapInstance(scope.map, mapOptions);
-        
+
         if (attrs.dragging === "false") {
           scope.map.dragging.disable();
         }
@@ -30,6 +31,11 @@
         }
         if (attrs.scrollWheelZoom === "false") {
           scope.map.scrollWheelZoom.disable();
+        }
+        if (attrs.tap === "false") {
+          if (scope.map.tap) {
+            scope.map.tap.disable();
+          }
         }
 
         var mapWidth = attrs.width + 'px' || 'auto';
